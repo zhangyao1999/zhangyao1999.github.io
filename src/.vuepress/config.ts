@@ -6,8 +6,8 @@ export default defineUserConfig({
   base: "/",
 
   lang: "zh-CN",
-  title: "坚持的秘诀就是无视中断",
-  description: "坚持的秘诀就是无视中断",
+  title: "首页",
+  description: "首页",
 
   theme,
 

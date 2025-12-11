@@ -2,7 +2,7 @@
 icon: file
 date: 2025-12-11
 category:
-  - java
+  - JAVA
 tag:
   - 高級特性
   - Lambda

@@ -4,25 +4,26 @@ layout: Blog
 icon: house
 title: 博客主页
 # heroImage: https://theme-hope-assets.vuejs.press/logo.svg
+bgImage: https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/20251211204701376.jpg
 heroText: ZY的博客
 heroFullScreen: false
-tagline: 记录学习
-hero: false
+# tagline: 坚持的秘诀就是无视中断
+hero: true
 projects:
   - icon: folder-open
     name: demo
     desc: 笔记使用查看
     link: https://zhangyao1999.github.io/demo/
 
-  # - icon: link
-  #   name: 链接名称
-  #   desc: 链接详细描述
-  #   link: https://链接地址
+  - icon: link
+    name: 时间线
+    desc: 按照时间排序
+    link: https://zhangyao1999.github.io/timeline/
 
-  # - icon: book
-  #   name: 书籍名称
-  #   desc: 书籍详细描述
-  #   link: https://你的书籍链接
+  - icon: JAVA
+    name: JAVA
+    desc: JAVA
+    link: https://zhangyao1999.github.io/posts/
 
   # - icon: newspaper
   #   name: 文章名称
