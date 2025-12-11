@@ -5,7 +5,6 @@ import sidebar from "./sidebar.js";
 
 export default hopeTheme({
   docsRepo: "zhangyao1999/zhangyao1999.github.io",
-  docsDir: "docs",
   docsBranch: "main",
   hostname: "https://zhangyao1999.github.io/",
 
