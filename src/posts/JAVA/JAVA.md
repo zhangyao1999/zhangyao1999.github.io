@@ -278,7 +278,7 @@ class User {
 
 
 
-![image-20230928215055293](./JAVA.assets/image-20230928215055293.png)
+![image-20230928215055293](https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/image-20230928215055293.png)
 
 ##### parallel
 
@@ -387,7 +387,7 @@ class User {
 
 
 
-<img src="./JAVA.assets/image-20230928215110355-20250921212801601.png" alt="image-20230928215110355" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/image-20230928215110355-20250921212801601.png" alt="image-20230928215110355" style="zoom:50%;" />
 
 - allMatch
 - noneMatch
@@ -403,7 +403,7 @@ class User {
 
 
 
-<img src="./JAVA.assets/2932861-20230815225907798-666803987.png" alt="image" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/2932861-20230815225907798-666803987.png" alt="image" style="zoom:50%;" />
 
 ```java
 package org.example;
@@ -447,9 +447,9 @@ class User {
 }
 ```
 
+![2932861-20230815230958209-725266597](https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/2932861-20230815230958209-725266597.png)
 
 
-<img src="./JAVA.assets/2932861-20230815230958209-725266597.png" alt="image" style="zoom:50%;" />
 
 ### 注意
 

@@ -15,10 +15,8 @@ sticky: true
 
 ## 标题 2
 
-这里是内容。111
+这里是内容。
 
 ### 标题 3
 
 这里是内容。
-
-![image-20251211141848225](https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/image-20251211141848225.png)
