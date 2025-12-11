@@ -27,6 +27,8 @@ export default hopeTheme({
     "/posts/": "structure",
 
     "/demo/": "structure",
+    "/框架/": "structure",
+
 
     // fallback
     "/": ["" /* / */],
