@@ -4,6 +4,9 @@ import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
 export default hopeTheme({
+  docsRepo: "zhangyao1999/zhangyao1999.github.io",
+  docsDir: "docs",
+  docsBranch: "main",
   hostname: "https://zhangyao1999.github.io/",
 
   author: {
@@ -13,7 +16,7 @@ export default hopeTheme({
 
   // logo: "https://theme-hope-assets.vuejs.press/logo.svg",
 
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
+  repo: "zhangyao1999/zhangyao1999.github.io",
 
   docsDir: "src",
 
