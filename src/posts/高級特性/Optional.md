@@ -1,9 +1,17 @@
+---
+icon: file
+date: 2025-12-11
+category:
+  - java
+tag:
+  - 高級特性
+---
 # Optional
 
 ## 概述
 
 大量的业务代码中有很多关于非空的判断，显得代码臃肿不堪，且程序员经常忘记这一操作。使用Optional可以避免空指针异常。并且很多函数式编程的API中也用到了Optional。
-
+<!-- more -->
 ## 封装和消费
 
 ```java

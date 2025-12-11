@@ -1,4 +1,13 @@
-
+---
+icon: file
+date: 2025-12-11
+category:
+  - java
+tag:
+  - 高級特性
+  - Lambda
+  - Stream
+---
 # Lambda和Stream流
 
 ## Lambda 表达式
