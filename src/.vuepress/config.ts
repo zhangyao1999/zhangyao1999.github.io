@@ -1,6 +1,7 @@
 import { defineUserConfig } from "vuepress";
 
 import theme from "./theme.js";
+import { searchPlugin } from '@vuepress/plugin-search'
 
 export default defineUserConfig({
   base: "/",
@@ -11,6 +12,15 @@ export default defineUserConfig({
 
   theme,
 
+  // plugins: [
+  //   searchPlugin({
+  //     // 配置项
+  //     maxSuggestions: 10,
+  //     getExtraFields: (page) => page.frontmatter.tags ?? [],
+  //   }),
+  // ],
+
   // 和 PWA 一起启用
   // shouldPrefetch: false,
 });
+
