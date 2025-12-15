@@ -5,7 +5,7 @@ icon: laptop-code
 category:
   - JAVA
 ---
-# 123123
+
 Java 是由 Sun Microsystems 公司于 1995 年 5 月推出的高级程序设计语言。
 
 Java 可运行于多个平台，如 Windows, Mac OS 及其他多种 UNIX 版本的系统。
