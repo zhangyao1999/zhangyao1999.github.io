@@ -7,7 +7,7 @@ title: 博客主页
 bgImage: https://raw.githubusercontent.com/zhangyao1999/photo_gallery/main/img/20251211204701376.jpg
 heroText: ZY的博客
 heroFullScreen: false
-# tagline: 坚持的秘诀就是无视中断
+tagline: 坚持的秘诀就是无视中断
 hero: true
 projects:
   - icon: folder-open

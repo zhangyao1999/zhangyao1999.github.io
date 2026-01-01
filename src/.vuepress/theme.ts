@@ -40,7 +40,7 @@ export default hopeTheme({
 
   // 博客相关
   blog: {
-    description: "记录学习笔记",
+    description: "快速学习，不需要全部自己写，复制粘贴已有的笔记整理到网页，可以随时翻阅。重在实践",
     intro: "/intro.html",
     medias: {
       // Baidu: "https://example.com",
