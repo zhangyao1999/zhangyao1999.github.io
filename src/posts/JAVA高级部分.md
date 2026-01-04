@@ -6,6 +6,328 @@ category:
   - JAVA
 ---
 # JAVA高级部分
+
+## **多线程**
+
+### **基本概念：程序，进程，线程**
+
+程序(program)：为了完成某种任务的特定的静态的代码，还没有运行起来。
+进程(process)：正在运行的一段程序，是资源分配的单位，系统会为每个进程分配不同的内存区域。
+线程(thread)：进程进一步细化为线程，是一条程序内部的执行路径，线程是cpu调度和执行的单位，每个线程拥有独立的虚拟机运行栈和程序计数器。
+
+方法区和堆是进程独有的，所有线程共享。
+
+对于单核cpu来说，多线程是假的。只有多核的才能发挥多线程。
+
+一个java程序至少三个线程，main主线程，gc垃圾回收线程，异常处理线程。
+
+**并行与并发**
+
+并行：多个cpu同时执行多个任务
+并发：一个cpu采用时间片同时执行多个任务。
+
+### **线程的创建和使用**
+
+**多线程的创建，方式一：继承于Thread类**
+
+- 创建一个继承于Thread类的子类
+- 重写run方法
+	- 如果直接调用run 那么不会有新线程，只会在main线程内顺序执行。
+- 实例化子类
+- 调用start方法
+	- 作用（启动线程 调用线程的run方法）
+	- 如果同一个实例调用多次start 会报异常。一个实例只能调用一次start
+
+```java
+public class Test12 {  
+    public static void main(String[] args) {  
+        MyThread myThread = new MyThread();  
+        myThread.start();  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println("Main Thread Print"+i);  
+            }  
+        }  
+    }  
+}  
+  
+class MyThread extends Thread {  
+  
+    @Override  
+    public void run() {  
+        // 输出100以内的所有偶数  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println("new Thread Print"+i);  
+            }  
+        }  
+    }  
+}
+```
+这里俩个线程交替执行 打印混杂在一起
+
+**例题：多窗口卖票**
+
+多个窗口卖票，在没有学习同步的情况下，我们能想到最优的解法就是将票的总数设置为静态变量，为类共享可以使得三个线程不会卖出多余的票。
+```java
+public class MaiPiao {  
+    public static void main(String[] args) {  
+        Thread window1 = new Window();  
+        window1.setName("窗口1");  
+        Thread window2 = new Window();  
+        window2.setName("窗口2");  
+        Thread window3 = new Window();  
+        window3.setName("窗口3");  
+        window1.start();  
+        window2.start();  
+        window3.start();  
+    }  
+  
+}  
+  
+class Window extends Thread {  
+    private static int num = 100;  
+  
+    @Override  
+    public void run() {  
+        while (true) {  
+            if (num > 0) {  
+                System.out.println(Thread.currentThread().getName() + "窗口卖了第" + num + "号票");  
+                num--;  
+            }  
+            if (num == 0) {  
+                break;  
+            }  
+        }  
+    }  
+}
+```
+
+static也无法严格的保证多线程安全
+
+窗口3窗口卖了第100号票
+窗口3窗口卖了第99号票
+窗口3窗口卖了第98号票
+窗口3窗口卖了第97号票
+窗口3窗口卖了第96号票
+窗口1窗口卖了第100号票
+窗口1窗口卖了第94号票
+窗口1窗口卖了第93号票
+...
+
+**Thread的匿名子类**
+
+```java
+new Thread("线程2"){  
+    @Override  
+    public void run() {  
+        // 输出100以内的所有偶数  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println("匿名 Thread Print" + i);  
+            }  
+        }  
+    }  
+}.start();
+
+```
+
+**多线程的创建，方式二：实现Runnable接口**
+
+**步骤**
+
+1. 创建一个实现了Runnable接口的类
+2. 实现类的抽象方法 run()
+3. 创建实现类的对象
+4. 将此对象作为参数传递到Thread累的构造器中，创建Thread累的对象
+5. 通过Thread类的对象调用start()方法
+
+**源码解释**
+为什么都是调用start 既可以支持方式一又可以支持方式二呢。答案在run的源码里
+
+> **源码**
+>
+> ```java
+> 
+> /**  
+>  * If this thread was constructed using a separate * <code>Runnable</code> run object, then that * <code>Runnable</code> object's <code>run</code> method is called; * otherwise, this method does nothing and returns. * <p>  
+>  * Subclasses of <code>Thread</code> should override this method. * * @see     #start() * @see     #stop() * @see     #Thread(ThreadGroup, Runnable, String)  
+>  */@Override  
+> public void run() {  
+>     if (target != null) {  
+>         target.run();  
+>     }  
+> }
+> 
+> ```
+> 这里如果Thread的子类重写了run方法，就直接调用子类run 。而如果没有重写，Thread构造器又传入了Runnable的实现类，这里target就不为空，就会调用target的run方法。
+
+**举例**
+```java
+public class shixianRunnable {  
+    public static void main(String[] args) {  
+        Runnable runnable = new MyRunnable();  
+        Thread thread = new Thread(runnable);  
+        Thread thread2 = new Thread(runnable);  
+        thread.start();  
+        thread2.start();  
+    }  
+}  
+class MyRunnable implements Runnable{  
+    @Override  
+    public void run() {  
+        for (int i = 0; i < 100; i++) {  
+            if(i%2==0){  
+                System.out.println(Thread.currentThread().getName()+"   "+i);  
+            }  
+        }  
+    }  
+}
+
+```
+
+**比较创建线程的俩种方式**
+
+开发中优先使用Runnable的方式
+原因：
+- 实现的方式没有单继承的局限性
+- 实现更适合于多个线程有共享的数据的模式
+
+因为继承每创建一个线程，都要new一个实例；而实现只需要new 一个实现类，将这个实现类可以复用到多个Thread实例中，这样的话Thread为了保证数据是同一个需要加static 而Runable里就不需要，因为只new一个。
+
+```java
+Thread window1 = new Window();  
+window1.setName("窗口1");  
+Thread window2 = new Window();  
+window2.setName("窗口2");  
+Thread window3 = new Window();  
+window3.setName("窗口3");
+
+和
+
+Runnable runnable = new MyRunnable();  
+Thread thread = new Thread(runnable);  
+Thread thread2 = new Thread(runnable);  
+thread.start();  
+thread2.start();  
+thread2.run();
+```
+
+### **Thread类的有关方法**
+
+- start 启动当前线程，调用当前线程run
+- run
+- currentThread 静态方法 返回执行当前代码的线程
+- setName 设置线程名称
+- getName 获取线程名称
+- yield 释放当前cpu的执行权 不一定有效
+
+```java
+class MyThread extends Thread {  
+  
+    @Override  
+    public void run() {  
+        // 输出100以内的所有偶数  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println(Thread.currentThread().getName() + i);  
+            }  
+            if (i % 20 == 0) {  
+                Thread.yield();  // 这里指的是当前线程 
+            }  
+        }  
+    }  
+}
+
+```
+Thread.yield(); 静态方法在哪里调用就在哪个线程下生效。
+
+
+
+- join 在线程A中调用线程B的join方法，现场A就进入阻塞状态，知道线程B完全执行完以后，A才结束阻塞状态。
+
+```java
+package org.example;  
+  
+public class Test12 {  
+    public static void main(String[] args) throws InterruptedException {  
+        MyThread myThread = new MyThread();  
+        myThread.start();  
+        Thread.currentThread().setName("主线程  ");  
+        myThread.setName("线程1  ");  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println(Thread.currentThread().getName() + i);  
+            }  
+            if (i == 20) {  
+                myThread.join();  // 在主线程调用分线程的join方法，会让主线程在打印到20的时候执行分线程，并且直到分线程执行完毕才会继续执行主线程。
+            }  
+        }  
+    }  
+}  
+  
+class MyThread extends Thread {  
+  
+    @Override  
+    public void run() {  
+        // 输出100以内的所有偶数  
+        for (int i = 0; i < 100; i++) {  
+            if (i % 2 == 0) {  
+                System.out.println(Thread.currentThread().getName() + i);  
+            }  
+            if (i % 20 == 0) {  
+                this.yield();  
+            }  
+        }  
+    }  
+}
+
+```
+非静态方法，必须得用其他线程的对象调用。
+
+
+
+- sleep
+
+sleep是静态方法，在哪里执行就在哪里阻塞线程。 如果使用某个Thread对象调用并不会阻塞该线程。
+阻塞线程，让出时间片，时间结束线程进入就绪状态 不释放锁，不一定轮到该线程。
+
+
+
+- isAlive
+
+myThread.isAlive()
+非静态方法，判断线程是否存活
+
+
+
+- wait
+
+线程进入阻塞状态，释放锁。
+
+### **线程的调度**
+
+**调度策略**
+	- 时间片
+	- 抢占式：高优先级的线程抢占cpu
+**java的调度方法**
+	同优先级线程组成先进先出队列，使用时间片
+	高优先级是有优先调度的抢占式策略。
+**线程的优先级**
+```java
+public final static int MIN_PRIORITY = 1;  
+public final static int NORM_PRIORITY = 5;  
+public final static int MAX_PRIORITY = 10;
+```
+
+**设置线程的优先级**
+	myThread.setPriority(2);  
+	myThread.getPriority();
+**说明**
+线程创建是继承父线程的优先级
+优先级不绝对有用。
+	
+
 ## Lambda
 
 **概念**

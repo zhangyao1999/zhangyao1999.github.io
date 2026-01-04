@@ -686,3 +686,321 @@ int[] scoresArr = new int[10];
 **动态初始化：** int[] arr = new int[3];
 
 **说明：** 手动指定数组长度，由系统给出默认初始化值。
+
+## **包装类**
+
+希望基本数据类型具有类的特征，可以面向对象。所以搞了包装类。
+Byte Short Integer Long Float Double Boolean Character 它们都是Number的子类。
+
+- 包装类和对应的基本数据类型 可以自动装箱，拆箱 无缝转换。
+- 包装类作为函数的形参时，和其对应的基本类型作为形参效果一样，都是传递值，**对于该对象本身并不会改变**。
+- 包装类.parseXXX方法可以转换成String。是常用方法。
+
+**常见题目：**
+
+```java
+Object o1 = true?new Integer(1):new Double(2.0);   // int和double 自动类型提升
+System.out.println(o1);  // 输出1.0
+```
+
+**当创建Integer对象时,不使用new Integer (inti) 语句,大小在-128~127之间,对象存放在Integer常量池中。**
+
+```java
+Integer i1 = new Integer(1);  
+Integer i2 = new Integer(1); // new 的包装类 地址值都不同  
+System.out.println(i1 == i2); // false   
+Integer i3 = 1;  
+Integer i4 = 1; // Integer内部有IntegerCache 范围在-128到127 之间 自动装箱时的时候是同一个实例  
+System.out.println(i3 == i4); // true  
+  
+Integer i5 = 128;  
+Integer i6 = 128;  
+System.out.println(i5 == i6); // false
+```
+
+## **Object**
+
+所有类的父类或者间接父类
+
+### **clone**
+
+参考帖子：[java.lang.Object.clone()解读 - zero516cn - 博客园 (cnblogs.com)](https://www.cnblogs.com/gw811/archive/2012/10/07/2712252.html)
+**读源码可以知道**
+1.clone是**native方法** 
+2.clone被protected修饰符修饰，所有子类的都可以使用 。
+3.clone返回一个object对象。
+
+**浅层复制与深层复制概念：**
+
+**浅层复制：** 被复制的对象的所有成员属性都有与原来的对象相同的值，而所有的对其他对象的引用仍然指向原来的对象。换言之，浅层复制仅仅复制所考虑的对象，而不复制它所引用的对象。（概念不好理解，请结合下文的示例去理解）
+
+**深层复制：** 被复制对象的所有变量都含有与原来的对象相同的值，除去那些引用其他对象的变量。那些引用其他对象的变量将指向被复制过的新对象，而不是原有的那些被引用的对象。换言之，深层复制要复制的对象引用的对象都复制一遍。
+
+**实现clone方法需要注意**
+- 类想要用clone方法必须实现Cloneable接口 否则会抛出CloneNotSupportedException。
+- java的clone是浅拷贝。
+- clone被protected修饰符修饰,子类内部可以使用，重写需要修改为public 方便子类外部调用。
+
+**深拷贝的俩个例子：**
+- 手动拷贝 不推荐
+- 序列化拷贝 ：把对象写到流中的过程是串行化(Serilization)过程，而把对象从流中读出来是并行化(Deserialization)过程。应当指出的是，写在流中的是对象的一个拷贝，而原来对象仍然存在JVM里面。  　　在Java语言里深层复制一个对象，常常可以先使对象实现Serializable接口，然后把对象（实际上只是对象的一个拷贝）写到一个流中，再从流中读出来，便可以重建对象。  　　这样做的前提是对象以及对象内部所有引用到的对象都是可串行化的，否则，就需要仔细考察那些不可串行化的对象是否设成transient，从而将之排除在复制过程之外。代码改进如下：
+``` java
+package org.example;
+ 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+ 
+public class Test {
+    public static void main(String[] args) throws CloneNotSupportedException, IOException, ClassNotFoundException {
+        Person p1 = new Person();
+        p1.name = "张垚";
+        p1.age = 12;
+        House house = new House();
+        house.setAddress("济南");
+        house.setPort(123);
+        p1.house = house;
+        Person p2 = (Person) p1.clone();
+        p2.getHouse().setPort(124);
+        System.out.println(p2);
+        System.out.println(p1);
+        Person p3 = (Person) p1.deepClone();
+        System.out.println(p3);
+    }
+ 
+}
+ 
+class Person implements Cloneable, Serializable { // 不Cloneable 会报错 不Serializable无法序列化
+    String name;
+    int age;
+ 
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", house=" + house +
+                '}';
+    }
+ 
+    public String getName() {
+        return name;
+    }
+ 
+    public void setName(String name) {
+        this.name = name;
+    }
+ 
+    public int getAge() {
+        return age;
+    }
+ 
+    public void setAge(int age) {
+        this.age = age;
+    }
+ 
+    public House getHouse() {
+        return house;
+    }
+ 
+    public void setHouse(House house) {
+        this.house = house;
+    }
+ 
+    House house;
+ 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Person clone = (Person) super.clone();
+        House clone1 = (House) house.clone();
+        clone.setHouse(clone1);// 实现深克隆
+        return clone;
+    }
+ 
+    public Object deepClone() throws IOException, ClassNotFoundException {// 序列化实现深克隆
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(this);
+ 
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        return objectInputStream.readObject();
+ 
+    }
+ 
+}
+ 
+class Student implements Cloneable, Serializable {
+    String major;
+    int score;
+}
+ 
+class House implements Cloneable, Serializable {
+    String address;
+    int port;
+ 
+    public String getAddress() {
+        return address;
+    }
+ 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+ 
+    @Override
+    public String toString() {
+        return "House{" +
+                "address='" + address + '\'' +
+                ", port=" + port +
+                '}';
+    }
+ 
+    public int getPort() {
+        return port;
+    }
+ 
+    public void setPort(int port) {
+        this.port = port;
+    }
+ 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+}
+ 
+```
+
+### **equals**
+
+**源码**
+```java
+public boolean equals(Object obj) {  
+    return (this == obj);  
+}
+```
+可以看到，Object原生的equals的效果和== 是相同的。要正确的使用该方法需要重写。像String Date File 包装类等都重写了eqlals方法。
+
+**== 和 equals 的区别**
+
+在*基本数据类型*中: 比较的是数值是否相等。（byte short int long double float char 他们互相之间都可以使用== 除了boolean）
+在*引用数据类型*中:比较的是地址值是否相等，即俩个引用是否指向同一个对象实例。
+
+### **finalize**
+
+当对象即将进行垃圾回收时，将调用该方法。
+与C++中的析构函数不是对应的。C++中的析构函数调用的时机是确定的，而java不确定。
+[finalize的作用 - zhangniuniu - 博客园 (cnblogs.com)](https://www.cnblogs.com/zyy1688/p/10838581.html)
+
+### **toString**
+
+**java源码**
+```java
+public String toString() {  
+    return getClass().getName() + "@" + Integer.toHexString(hashCode());  
+}
+```
+可以看到输出类名+jvm中的虚拟地址值
+我们可以重写该方法输出类中的属性。
+
+## **javaBean**
+
+- java语言写成的可重用的公共组件
+- 开发者将一些功能 值 数据库访问等打包 可以在jsp servlet 其他javabean使用 
+- 条件
+	- 有无参构造方法
+	- 公共的
+	- 有属性有get set方法
+
+## **异常处理**
+
+**概念**
+java语言中，将程序发送的不正常情况称为异常（语法错误和逻辑错误不是异常）
+
+异常（Throwable）分为两类：
+
+### Error
+
+java虚拟机无法解决的严重问题，如jvm系统内部错误，资源耗尽等情况。
+
+StackOverflowError(方法递归容易导致) 和OOM（new 了一个很大的数组 堆溢出）。一般不编写针对性的问题处理。
+
+### Exception
+
+其他编程错误或者外在的因素导致的一般性问题。
+
+**异常的分类**
+
+编译时异常(IOException ClassNotFountException)  
+- 必须在代码中处理。包括Exception也是编译时异常。
+
+运行时异常(RuntimeException) 
+- 可以不处理
+
+
+
+### 异常处理方式
+
+方式一：try catch finally 真正的将异常处理掉了。
+
+> catch中的异常类型如果没有子父类关系，谁在上下无所谓，如果有则子类在上
+>
+> finally 是一定会执行的 即使catch中有异常 return 或者try中有return  也还是会执行 且此处的return会覆盖前两处结构的return
+>
+> ```java
+> public class Test12 {  
+>     public static void main(String[] args) {  
+>         System.out.println(Method());   // 3
+>     }  
+>   
+>     static int Method() {  
+>         try {  
+>             int i = 1 / 0;  
+>             return 1;  
+>         } catch (Exception e) {  
+>             return 2;  
+>         } finally {  
+>             return 3;  
+>         }  
+>     }  
+> }
+> ```
+
+方式二：在方法声明处 throws + 异常类型。指明该方法可能抛出的异常类型。
+一旦方法体执行时，出现异常，会在异常代码处生成一个异常累的对象，此对象满足throws后的异常类型是，就会被抛出。后续的代码不在执行。没有处理，只是抛给了方法的调用者。
+
+**如何选用**
+如果方法之间是层层递进，相互依赖，那么可以使用throws 
+如果是子类继承父类，父类又没有抛出异常，那么可以try catch
+
+
+
+### 手动抛出异常
+
+使用throw new Exception();
+**自定义异常**
+
+```java
+class MyException extends RuntimeException{  
+    // 序列化唯一标识使用  
+    static final long serialVersionUID = -7034897190715766939L;  
+    // 重载几个构造器  
+    public MyException(){  
+        super();  
+    }  
+    public MyException(String msg){  
+        super(msg);  
+    }  
+}
+```
+
+
+
+### throw和throws有什么区别
+
+throw 抛出异常 手动抛出一个异常对象 在方法体内
+
+throws 声明异常 是异常处理的一种方式 在方法声明处
