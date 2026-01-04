@@ -5,6 +5,7 @@ order: 100
 category:
   - JAVA
 ---
+# JAVA高级部分
 ## Lambda
 
 **概念**
