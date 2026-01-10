@@ -84,6 +84,7 @@ export default hopeTheme({
   // 加密配置
   encrypt: {
     config: {
+      "/posts/": ["0909", "9090", "9900", "0099"],
       "/demo/encrypt.html": {
         hint: "Password: 1234",
         password: "1234",
