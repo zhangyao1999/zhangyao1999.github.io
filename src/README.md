@@ -20,9 +20,9 @@ projects:
     desc: 按照时间排序
     link: https://zhangyao1999.github.io/timeline/
 
-  - icon: JAVA
-    name: JAVA
-    desc: JAVA
+  - icon: folder-open
+    name: 博客
+    desc: 博客
     link: https://zhangyao1999.github.io/posts/
 
   # - icon: newspaper
